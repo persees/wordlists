@@ -1,0 +1,5 @@
+X-Host
+X-Forwarded-Server
+X-HTTP-Host-Override
+Forwarded
+X-Forwarded-Host
