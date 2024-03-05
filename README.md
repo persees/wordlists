@@ -1,2 +1,2 @@
 # wordlists
-A rewpository with some custom wordlists
+A repository with some custom wordlists
