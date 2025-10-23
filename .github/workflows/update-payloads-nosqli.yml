@@ -35,7 +35,7 @@ jobs:
           curl -sL https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/NoSQL%20Injection/Intruder/NoSQL.txt -o temp_payloads/noSQLiPayloads1.txt
           
           cat temp_payloads/*.txt fuzzing/Databases/NoSQL.txt | sort -u > fuzzing/Databases/NoSQLUpdated.txt
-          mv fuzzing/Databases/NoSQLUpdated.txt fuzzing/Databases/sqli.txt
+          mv fuzzing/Databases/NoSQLUpdated.txt fuzzing/Databases/NoSQL.txt
           
           rm -rf temp_payloads
       
