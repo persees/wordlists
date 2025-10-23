@@ -1,0 +1,60 @@
+name: Update Payloads - NoSQL Injection
+
+on:
+  schedule:
+    - cron: '0 1 */1 * *'
+  workflow_dispatch:
+
+jobs:
+  update-payloads:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Fetch and merge payloads
+        run: |
+          mkdir -p temp_payloads
+          
+          # Fetch from SecLists
+          curl -sL https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Fuzzing/Databases/SQLi/NoSQL.txt -o temp_payloads/noSQLiSeclists.txt
+          
+          # Fetch from cr0hn repo
+          curl -sL https://raw.githubusercontent.com/cr0hn/nosqlinjection_wordlists/refs/heads/master/mongodb_nosqli.txt -o temp_payloads/noSQLicrohn.txt
+
+          # Fetch from Payload of all things
+          curl -sL https://raw.githubusercontent.com/swisskyrepo/PayloadsAllTheThings/refs/heads/master/NoSQL%20Injection/Intruder/MongoDB.txt -o temp_payloads/noSQLiPayloads.txt
+          curl -sL https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/NoSQL%20Injection/Intruder/NoSQL.txt -o temp_payloads/noSQLiPayloads1.txt
+          
+          cat temp_payloads/*.txt fuzzing/Databases/NoSQL.txt | sort -u > fuzzing/Databases/NoSQLUpdated.txt
+          mv fuzzing/Databases/NoSQLUpdated.txt fuzzing/Databases/sqli.txt
+          
+          rm -rf temp_payloads
+      
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n $(git status -s) ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "New payloads found and merged"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No new payloads"
+          fi
+      
+      - name: Commit and push if changed
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add payloads/
+          git commit -m "chore: auto-update payloads from external sources"
+          git push
