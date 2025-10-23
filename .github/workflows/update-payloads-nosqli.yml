@@ -32,7 +32,7 @@ jobs:
 
           # Fetch from Payload of all things
           curl -sL https://raw.githubusercontent.com/swisskyrepo/PayloadsAllTheThings/refs/heads/master/NoSQL%20Injection/Intruder/MongoDB.txt -o temp_payloads/noSQLiPayloads.txt
-          curl -sL https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/NoSQL%20Injection/Intruder/NoSQL.txt -o temp_payloads/noSQLiPayloads1.txt
+          curl -sL https://raw.githubusercontent.com/swisskyrepo/PayloadsAllTheThings/refs/heads/master/NoSQL%20Injection/Intruder/NoSQL.txt -o temp_payloads/noSQLiPayloads1.txt
           
           cat temp_payloads/*.txt fuzzing/Databases/NoSQL.txt | sort -u > fuzzing/Databases/NoSQLUpdated.txt
           mv fuzzing/Databases/NoSQLUpdated.txt fuzzing/Databases/NoSQL.txt
